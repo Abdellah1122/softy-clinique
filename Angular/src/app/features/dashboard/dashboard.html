@@ -1,0 +1,51 @@
+<div class="flex h-screen bg-background">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-surface border-r border-gray-200 hidden md:flex flex-col">
+        <div class="h-16 flex items-center px-6 border-b border-gray-200">
+            <h1 class="text-xl font-bold text-primary font-sans">
+                Clinique
+            </h1>
+        </div>
+
+        <nav class="flex-1 px-4 py-4 space-y-2">
+            <a routerLink="/dashboard" class="flex items-center px-4 py-2 text-text-primary bg-gray-100 rounded-lg">
+                <span class="font-medium">Dashboard</span>
+            </a>
+            <a routerLink="/dashboard/appointments" routerLinkActive="bg-gray-100 text-text-primary"
+                class="flex items-center px-4 py-2 text-text-secondary hover:text-text-primary hover:bg-gray-50 rounded-lg group">
+                <span class="font-medium group-[.bg-gray-100]:text-primary">Appointments</span>
+            </a>
+            <a routerLink="/dashboard/patients" routerLinkActive="bg-gray-100 text-text-primary"
+                class="flex items-center px-4 py-2 text-text-secondary hover:text-text-primary hover:bg-gray-50 rounded-lg group">
+                <span class="font-medium group-[.bg-gray-100]:text-primary">Patients</span>
+            </a>
+            <a href="#"
+                class="flex items-center px-4 py-2 text-text-secondary hover:text-text-primary hover:bg-gray-50 rounded-lg">
+                <span class="font-medium">Therapists</span>
+            </a>
+        </nav>
+
+        <div class="p-4 border-t border-gray-200">
+            <button (click)="logout()"
+                class="w-full flex items-center px-4 py-2 text-error hover:bg-red-50 rounded-lg transition-colors">
+                <span class="font-medium">Sign Out</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+        <!-- Header (Mobile) -->
+        <header class="h-16 bg-surface border-b border-gray-200 flex items-center justify-between px-6 md:hidden">
+            <h1 class="text-lg font-bold text-primary">Clinique</h1>
+            <button (click)="logout()" class="text-text-secondary">Logout</button>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-6">
+            <div class="max-w-7xl mx-auto">
+                <router-outlet></router-outlet>
+            </div>
+        </main>
+    </div>
+</div>

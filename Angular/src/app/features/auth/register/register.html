@@ -1,0 +1,94 @@
+<div class="min-h-screen bg-background flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div class="sm:mx-auto sm:w-full sm:max-w-md">
+        <h2 class="mt-6 text-center text-3xl font-bold text-primary font-sans">
+            Create Account
+        </h2>
+        <p class="mt-2 text-center text-sm text-text-secondary">
+            Join Clinique Assistant today
+        </p>
+    </div>
+
+    <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div class="bg-surface py-8 px-4 shadow sm:rounded-lg sm:px-10 border border-gray-100">
+            <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-6">
+
+                <!-- Names Row -->
+                <div class="flex gap-4">
+                    <div class="flex-1">
+                        <label for="firstName" class="block text-sm font-medium text-text-primary">First Name</label>
+                        <div class="mt-1">
+                            <input id="firstName" type="text" formControlName="firstName"
+                                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                                [class.border-error]="registerForm.get('firstName')?.invalid && registerForm.get('firstName')?.touched">
+                        </div>
+                    </div>
+                    <div class="flex-1">
+                        <label for="lastName" class="block text-sm font-medium text-text-primary">Last Name</label>
+                        <div class="mt-1">
+                            <input id="lastName" type="text" formControlName="lastName"
+                                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                                [class.border-error]="registerForm.get('lastName')?.invalid && registerForm.get('lastName')?.touched">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Role -->
+                <div>
+                    <label for="role" class="block text-sm font-medium text-text-primary">I am a</label>
+                    <div class="mt-1">
+                        <select id="role" formControlName="role"
+                            class="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm">
+                            <option value="PATIENT">Patient</option>
+                            <option value="THERAPIST">Therapist</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div>
+                    <label for="email" class="block text-sm font-medium text-text-primary">Email address</label>
+                    <div class="mt-1">
+                        <input id="email" type="email" formControlName="email"
+                            class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                            [class.border-error]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div>
+                    <label for="password" class="block text-sm font-medium text-text-primary">Password</label>
+                    <div class="mt-1">
+                        <input id="password" type="password" formControlName="password"
+                            class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                            [class.border-error]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+                    </div>
+                </div>
+
+                <!-- Error Message -->
+                <div *ngIf="errorMessage" class="rounded-md bg-red-50 p-4">
+                    <div class="flex">
+                        <div class="ml-3">
+                            <h3 class="text-sm font-medium text-red-800">{{ errorMessage }}</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div>
+                    <button type="submit" [disabled]="isLoading || registerForm.invalid"
+                        class="w-full flex justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed transition duration-150">
+                        <span *ngIf="!isLoading">Register</span>
+                        <span *ngIf="isLoading">Creating account...</span>
+                    </button>
+                </div>
+            </form>
+
+            <div class="mt-6 text-center">
+                <span class="text-sm text-gray-500">Already have an account? </span>
+                <a routerLink="/auth/login" class="font-medium text-primary hover:text-primary-dark">
+                    Sign in
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

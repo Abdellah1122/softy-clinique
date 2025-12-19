@@ -1,0 +1,86 @@
+<div class="min-h-screen bg-background flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+  <div class="sm:mx-auto sm:w-full sm:max-w-md">
+    <h2 class="mt-6 text-center text-3xl font-bold text-primary font-sans">
+      Clinique Assistant
+    </h2>
+    <p class="mt-2 text-center text-sm text-text-secondary">
+      Sign in to your account
+    </p>
+  </div>
+
+  <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+    <div class="bg-surface py-8 px-4 shadow sm:rounded-lg sm:px-10 border border-gray-100">
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-6">
+        
+        <!-- Email -->
+        <div>
+          <label for="email" class="block text-sm font-medium text-text-primary">
+            Email address
+          </label>
+          <div class="mt-1">
+            <input id="email" type="email" formControlName="email"
+              class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm transition duration-150 ease-in-out"
+              [class.border-error]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+          </div>
+          <div *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" class="text-error text-xs mt-1">
+            Valid email is required
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div>
+          <label for="password" class="block text-sm font-medium text-text-primary">
+            Password
+          </label>
+          <div class="mt-1">
+            <input id="password" type="password" formControlName="password"
+              class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm transition duration-150 ease-in-out"
+              [class.border-error]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+          </div>
+          <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="text-error text-xs mt-1">
+            Password is required (min 6 chars)
+          </div>
+        </div>
+
+        <!-- Error Message -->
+        <div *ngIf="errorMessage" class="rounded-md bg-red-50 p-4">
+          <div class="flex">
+            <div class="ml-3">
+              <h3 class="text-sm font-medium text-red-800">
+                {{ errorMessage }}
+              </h3>
+            </div>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div>
+          <button type="submit" [disabled]="isLoading || loginForm.invalid"
+            class="w-full flex justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed transition duration-150">
+            <span *ngIf="!isLoading">Sign in</span>
+            <span *ngIf="isLoading">Signing in...</span>
+          </button>
+        </div>
+      </form>
+
+      <div class="mt-6">
+        <div class="relative">
+          <div class="absolute inset-0 flex items-center">
+            <div class="w-full border-t border-gray-300"></div>
+          </div>
+          <div class="relative flex justify-center text-sm">
+            <span class="px-2 bg-white text-text-secondary">
+              Or
+            </span>
+          </div>
+        </div>
+
+        <div class="mt-6 text-center">
+           <a routerLink="/auth/register" class="font-medium text-primary hover:text-primary-dark">
+             Create a new account
+           </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
