@@ -99,6 +99,11 @@ class AppointmentServiceTest {
         appointment.setCreatedAt(LocalDateTime.now());
     }
 
+    /**
+     * Vérifie qu'un rendez-vous est créé avec succès lorsque toutes les données
+     * sont valides.
+     * Note: Ignore le fallback du WebClient pour le score de risque (non critique).
+     */
     @Test
     @DisplayName("Doit créer un rendez-vous avec succès")
     void shouldCreateAppointmentSuccessfully() {
@@ -113,7 +118,8 @@ class AppointmentServiceTest {
         when(appointmentRepository.save(any(Appointment.class))).thenReturn(appointment);
 
         // Note: Le WebClient échouera et le score sera null (comportement attendu)
-        // On ne mock pas le WebClient car c'est trop complexe et ce n'est pas critique pour ce test
+        // On ne mock pas le WebClient car c'est trop complexe et ce n'est pas critique
+        // pour ce test
 
         // When
         AppointmentDTO result = appointmentService.createAppointment(request);
@@ -125,6 +131,10 @@ class AppointmentServiceTest {
         verify(appointmentRepository, atLeastOnce()).save(any(Appointment.class));
     }
 
+    /**
+     * Vérifie qu'une exception est lancée si l'on tente de créer un rendez-vous
+     * pour un patient inexistant.
+     */
     @Test
     @DisplayName("Doit lancer une exception si le patient n'existe pas")
     void shouldThrowExceptionWhenPatientNotFound() {
@@ -142,6 +152,10 @@ class AppointmentServiceTest {
         });
     }
 
+    /**
+     * Vérifie qu'une exception est lancée si l'on tente de créer un rendez-vous
+     * pour un thérapeute inexistant.
+     */
     @Test
     @DisplayName("Doit lancer une exception si le thérapeute n'existe pas")
     void shouldThrowExceptionWhenTherapistNotFound() {
@@ -160,6 +174,9 @@ class AppointmentServiceTest {
         });
     }
 
+    /**
+     * Vérifie qu'un patient peut récupérer les détails de son propre rendez-vous.
+     */
     @Test
     @DisplayName("Doit récupérer un rendez-vous par ID pour un patient")
     void shouldGetAppointmentByIdForPatient() {
@@ -175,6 +192,9 @@ class AppointmentServiceTest {
         verify(appointmentRepository).findById(1L);
     }
 
+    /**
+     * Vérifie qu'une exception est lancée si le rendez-vous demandé n'existe pas.
+     */
     @Test
     @DisplayName("Doit lancer une exception si le rendez-vous n'existe pas")
     void shouldThrowExceptionWhenAppointmentNotFound() {
@@ -187,6 +207,9 @@ class AppointmentServiceTest {
         });
     }
 
+    /**
+     * Vérifie qu'un patient ne peut pas accéder aux rendez-vous d'un autre patient.
+     */
     @Test
     @DisplayName("Doit refuser l'accès à un patient non autorisé")
     void shouldDenyAccessToUnauthorizedPatient() {
@@ -205,6 +228,9 @@ class AppointmentServiceTest {
         });
     }
 
+    /**
+     * Vérifie qu'un administrateur peut accéder à n'importe quel rendez-vous.
+     */
     @Test
     @DisplayName("Doit autoriser l'accès à un admin")
     void shouldAllowAccessToAdmin() {
@@ -219,6 +245,9 @@ class AppointmentServiceTest {
         assertEquals(1L, result.getId());
     }
 
+    /**
+     * Vérifie qu'un patient peut récupérer la liste de tous ses rendez-vous.
+     */
     @Test
     @DisplayName("Doit récupérer les rendez-vous d'un patient")
     void shouldGetAppointmentsForPatient() {
@@ -236,6 +265,10 @@ class AppointmentServiceTest {
         assertEquals(1L, result.get(0).getId());
     }
 
+    /**
+     * Vérifie qu'il est interdit de récupérer la liste des rendez-vous d'un autre
+     * patient.
+     */
     @Test
     @DisplayName("Doit refuser l'accès aux rendez-vous d'un autre patient")
     void shouldDenyAccessToOtherPatientAppointments() {
@@ -253,6 +286,9 @@ class AppointmentServiceTest {
         });
     }
 
+    /**
+     * Vérifie qu'un thérapeute peut récupérer la liste de ses propres rendez-vous.
+     */
     @Test
     @DisplayName("Doit récupérer les rendez-vous d'un thérapeute")
     void shouldGetAppointmentsForTherapist() {
@@ -269,6 +305,10 @@ class AppointmentServiceTest {
         assertEquals(1, result.size());
     }
 
+    /**
+     * Vérifie qu'il est interdit de récupérer la liste des rendez-vous d'un autre
+     * thérapeute (sauf admin).
+     */
     @Test
     @DisplayName("Doit refuser l'accès aux rendez-vous d'un autre thérapeute")
     void shouldDenyAccessToOtherTherapistAppointments() {
@@ -286,6 +326,9 @@ class AppointmentServiceTest {
         });
     }
 
+    /**
+     * Vérifie qu'un administrateur a le droit de voir le planning d'un thérapeute.
+     */
     @Test
     @DisplayName("Doit permettre à un admin de voir les rendez-vous d'un thérapeute")
     void shouldAllowAdminToSeeTherapistAppointments() {
@@ -302,6 +345,9 @@ class AppointmentServiceTest {
         assertEquals(1, result.size());
     }
 
+    /**
+     * Vérifie qu'un patient peut annuler son propre rendez-vous.
+     */
     @Test
     @DisplayName("Doit annuler un rendez-vous par le patient")
     void shouldCancelAppointmentByPatient() {
@@ -317,6 +363,10 @@ class AppointmentServiceTest {
         verify(appointmentRepository).save(any(Appointment.class));
     }
 
+    /**
+     * Vérifie qu'un patient ne peut pas annuler le rendez-vous de quelqu'un
+     * d'autre.
+     */
     @Test
     @DisplayName("Doit refuser l'annulation par un autre patient")
     void shouldDenyCancellationByOtherPatient() {
@@ -334,6 +384,10 @@ class AppointmentServiceTest {
         });
     }
 
+    /**
+     * Vérifie qu'il est impossible d'annuler un rendez-vous déjà marqué comme
+     * terminé.
+     */
     @Test
     @DisplayName("Doit refuser l'annulation d'un rendez-vous terminé")
     void shouldDenyCancellationOfCompletedAppointment() {
@@ -347,6 +401,10 @@ class AppointmentServiceTest {
         });
     }
 
+    /**
+     * Vérifie qu'un thérapeute peut marquer un rendez-vous comme terminé (après la
+     * séance).
+     */
     @Test
     @DisplayName("Doit marquer un rendez-vous comme terminé par le thérapeute")
     void shouldCompleteAppointmentByTherapist() {
@@ -362,6 +420,10 @@ class AppointmentServiceTest {
         verify(appointmentRepository).save(any(Appointment.class));
     }
 
+    /**
+     * Vérifie qu'un thérapeute ne peut pas clore le rendez-vous d'un autre
+     * thérapeute.
+     */
     @Test
     @DisplayName("Doit refuser la complétion par un autre thérapeute")
     void shouldDenyCompletionByOtherTherapist() {
@@ -379,6 +441,10 @@ class AppointmentServiceTest {
         });
     }
 
+    /**
+     * Vérifie que le système retourne une recommandation par défaut (7 jours) en
+     * l'absence de score de progrès précédent.
+     */
     @Test
     @DisplayName("Doit obtenir une recommandation de timing par défaut si pas de score")
     void shouldGetDefaultTimingRecommendationWhenNoScore() {
@@ -394,6 +460,10 @@ class AppointmentServiceTest {
         assertEquals(7, result.getRecommendedDaysNextSession());
     }
 
+    /**
+     * Vérifie qu'une exception est lancée si on demande une recommandation pour un
+     * patient inconnu.
+     */
     @Test
     @DisplayName("Doit lancer une exception si le patient n'existe pas pour timing")
     void shouldThrowExceptionWhenPatientNotFoundForTiming() {

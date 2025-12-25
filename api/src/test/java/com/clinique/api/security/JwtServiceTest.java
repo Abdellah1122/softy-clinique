@@ -43,6 +43,10 @@ class JwtServiceTest {
                 .build();
     }
 
+    /**
+     * Vérifie que la méthode generateToken crée un token non null, non vide et bien
+     * formé (3 parties).
+     */
     @Test
     @DisplayName("Doit générer un token JWT valide")
     void shouldGenerateValidToken() {
@@ -55,6 +59,10 @@ class JwtServiceTest {
         assertTrue(token.split("\\.").length == 3, "Le token JWT doit avoir 3 parties (header.payload.signature)");
     }
 
+    /**
+     * Vérifie que le claim "subject" (username) peut être extrait correctement du
+     * token.
+     */
     @Test
     @DisplayName("Doit extraire le nom d'utilisateur (email) du token")
     void shouldExtractUsernameFromToken() {
@@ -65,9 +73,14 @@ class JwtServiceTest {
         String extractedUsername = jwtService.extractUsername(token);
 
         // Then
-        assertEquals(testUser.getEmail(), extractedUsername, "L'email extrait doit correspondre à l'email de l'utilisateur");
+        assertEquals(testUser.getEmail(), extractedUsername,
+                "L'email extrait doit correspondre à l'email de l'utilisateur");
     }
 
+    /**
+     * Vérifie que la validation réussit pour un token valide correspondant à
+     * l'utilisateur.
+     */
     @Test
     @DisplayName("Doit valider un token correct avec succès")
     void shouldValidateCorrectToken() {
@@ -81,6 +94,10 @@ class JwtServiceTest {
         assertTrue(isValid, "Le token doit être valide pour l'utilisateur correct");
     }
 
+    /**
+     * Vérifie que la validation échoue si le token appartient à un autre
+     * utilisateur.
+     */
     @Test
     @DisplayName("Ne doit pas valider un token pour un utilisateur différent")
     void shouldNotValidateTokenForDifferentUser() {
@@ -101,6 +118,10 @@ class JwtServiceTest {
         assertFalse(isValid, "Le token ne doit pas être valide pour un utilisateur différent");
     }
 
+    /**
+     * Vérifie implicitement que les rôles sont inclus lors de la génération (via
+     * l'extraction du username).
+     */
     @Test
     @DisplayName("Doit inclure les rôles dans le token")
     void shouldIncludeRolesInToken() {
@@ -114,9 +135,13 @@ class JwtServiceTest {
         // Then
         assertNotNull(username);
         // Note: Dans un test réel, vous pourriez vouloir extraire le claim "roles"
-        // mais cela nécessiterait d'exposer extractAllClaims ou d'ajouter une méthode publique
+        // mais cela nécessiterait d'exposer extractAllClaims ou d'ajouter une méthode
+        // publique
     }
 
+    /**
+     * Vérifie implicitement que l'ID utilisateur est inclus lors de la génération.
+     */
     @Test
     @DisplayName("Doit inclure l'ID utilisateur dans le token")
     void shouldIncludeUserIdInToken() {
@@ -132,6 +157,10 @@ class JwtServiceTest {
         // Note: Pour vérifier userId, il faudrait une méthode extractUserId() publique
     }
 
+    /**
+     * Vérifie qu'un token expiré lève une exception ExpiredJwtException lors de
+     * l'extraction.
+     */
     @Test
     @DisplayName("Ne doit pas valider un token expiré")
     void shouldNotValidateExpiredToken() {
@@ -155,6 +184,10 @@ class JwtServiceTest {
         }, "Une exception ExpiredJwtException devrait être levée pour un token expiré");
     }
 
+    /**
+     * Vérifie qu'un token signé avec une clé différente lève une
+     * SignatureException.
+     */
     @Test
     @DisplayName("Doit rejeter un token avec une signature invalide")
     void shouldRejectTokenWithInvalidSignature() {
@@ -172,6 +205,9 @@ class JwtServiceTest {
         }, "Une exception SignatureException devrait être levée pour une signature invalide");
     }
 
+    /**
+     * Vérifie qu'un token sans structure JWT valide provoque une exception.
+     */
     @Test
     @DisplayName("Doit rejeter un token malformé")
     void shouldRejectMalformedToken() {
@@ -184,6 +220,9 @@ class JwtServiceTest {
         }, "Une exception devrait être levée pour un token malformé");
     }
 
+    /**
+     * Vérifie que le service rejette un token null.
+     */
     @Test
     @DisplayName("Doit rejeter un token null")
     void shouldRejectNullToken() {
@@ -196,6 +235,9 @@ class JwtServiceTest {
         }, "Une exception devrait être levée pour un token null");
     }
 
+    /**
+     * Vérifie que le service rejette un token vide.
+     */
     @Test
     @DisplayName("Doit rejeter un token vide")
     void shouldRejectEmptyToken() {
@@ -208,6 +250,10 @@ class JwtServiceTest {
         }, "Une exception devrait être levée pour un token vide");
     }
 
+    /**
+     * Vérifie que la validation fonctionne correctement pour tous les rôles
+     * (Patient, Thérapeute, Admin).
+     */
     @Test
     @DisplayName("Doit valider un token pour différents rôles")
     void shouldValidateTokenForDifferentRoles() {
@@ -242,6 +288,10 @@ class JwtServiceTest {
         assertTrue(jwtService.isTokenValid(adminToken, admin));
     }
 
+    /**
+     * Vérifie que le service gère correctement les emails contenant des caractères
+     * spéciaux lors de l'extraction.
+     */
     @Test
     @DisplayName("Doit extraire correctement l'email avec caractères spéciaux")
     void shouldExtractEmailWithSpecialCharacters() {

@@ -70,6 +70,10 @@ class JwtAuthenticationFilterTest {
         validToken = "valid.jwt.token";
     }
 
+    /**
+     * Vérifie que le filtre authentifie l'utilisateur lorsque le token dans le
+     * header est valide.
+     */
     @Test
     @DisplayName("Doit authentifier l'utilisateur avec un token valide")
     void shouldAuthenticateUserWithValidToken() throws ServletException, IOException {
@@ -91,6 +95,10 @@ class JwtAuthenticationFilterTest {
                 "L'utilisateur authentifié doit correspondre");
     }
 
+    /**
+     * Vérifie que le filtre ne fait rien (passe au suivant) si le header
+     * Authorization est absent.
+     */
     @Test
     @DisplayName("Doit passer au filtre suivant si aucun header Authorization")
     void shouldContinueFilterChainWhenNoAuthorizationHeader() throws ServletException, IOException {
@@ -107,6 +115,10 @@ class JwtAuthenticationFilterTest {
                 "Aucune authentification ne doit être définie");
     }
 
+    /**
+     * Vérifie que le filtre ne fait rien (passe au suivant) si le header
+     * Authorization ne commence pas par "Bearer ".
+     */
     @Test
     @DisplayName("Doit passer au filtre suivant si le header ne commence pas par 'Bearer '")
     void shouldContinueFilterChainWhenHeaderDoesNotStartWithBearer() throws ServletException, IOException {
@@ -122,6 +134,10 @@ class JwtAuthenticationFilterTest {
         assertNull(SecurityContextHolder.getContext().getAuthentication());
     }
 
+    /**
+     * Vérifie que l'authentification n'est pas établie si le token est invalide
+     * (signature incorrecte ou expiré).
+     */
     @Test
     @DisplayName("Ne doit pas authentifier si le token est invalide")
     void shouldNotAuthenticateWhenTokenIsInvalid() throws ServletException, IOException {
@@ -140,6 +156,10 @@ class JwtAuthenticationFilterTest {
                 "L'authentification ne doit pas être définie pour un token invalide");
     }
 
+    /**
+     * Vérifie que le filtre retourne une erreur 401 si le token est malformé (ex:
+     * pas de structure JWT).
+     */
     @Test
     @DisplayName("Doit retourner 401 si le token est malformé")
     void shouldReturn401WhenTokenIsMalformed() throws ServletException, IOException {
@@ -162,6 +182,10 @@ class JwtAuthenticationFilterTest {
         assertTrue(stringWriter.toString().contains("Token JWT Invalide ou Expiré"));
     }
 
+    /**
+     * Vérifie que le filtre retourne une erreur 401 si le token est valide mais
+     * correspond à un utilisateur inexistant.
+     */
     @Test
     @DisplayName("Doit retourner 401 si l'utilisateur n'existe pas")
     void shouldReturn401WhenUserDoesNotExist() throws ServletException, IOException {
@@ -183,13 +207,16 @@ class JwtAuthenticationFilterTest {
         verify(filterChain, never()).doFilter(request, response);
     }
 
+    /**
+     * Vérifie que le filtre évite de recharger l'utilisateur si une
+     * authentification est déjà présente dans le contexte.
+     */
     @Test
     @DisplayName("Ne doit pas re-authentifier si l'utilisateur est déjà authentifié")
     void shouldNotReAuthenticateIfAlreadyAuthenticated() throws ServletException, IOException {
         // Given - Créer un contexte d'authentification existant
-        org.springframework.security.authentication.UsernamePasswordAuthenticationToken existingAuth =
-                new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(
-                        testUser, null, testUser.getAuthorities());
+        org.springframework.security.authentication.UsernamePasswordAuthenticationToken existingAuth = new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(
+                testUser, null, testUser.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(existingAuth);
 
         when(request.getHeader("Authorization")).thenReturn("Bearer " + validToken);
@@ -204,6 +231,10 @@ class JwtAuthenticationFilterTest {
         verify(jwtService, never()).isTokenValid(anyString(), any());
     }
 
+    /**
+     * Vérifie que la chaîne du token est correctement extraite en supprimant le
+     * préfixe "Bearer ".
+     */
     @Test
     @DisplayName("Doit extraire le token correctement après 'Bearer '")
     void shouldExtractTokenCorrectlyAfterBearer() throws ServletException, IOException {
@@ -224,12 +255,16 @@ class JwtAuthenticationFilterTest {
         verify(filterChain).doFilter(request, response);
     }
 
+    /**
+     * Vérifie que le filtre gère correctement les espaces superflus dans le header.
+     */
     @Test
     @DisplayName("Doit gérer les tokens avec espaces supplémentaires")
     void shouldHandleTokensWithExtraSpaces() throws ServletException, IOException {
         // Given
         when(request.getHeader("Authorization")).thenReturn("Bearer  " + validToken);
-        // Note: Le filtre prend tout après "Bearer " donc cela inclura l'espace supplémentaire
+        // Note: Le filtre prend tout après "Bearer " donc cela inclura l'espace
+        // supplémentaire
         when(jwtService.extractUsername(" " + validToken))
                 .thenThrow(new RuntimeException("Token avec espace"));
 
@@ -244,6 +279,10 @@ class JwtAuthenticationFilterTest {
         verify(response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
     }
 
+    /**
+     * Vérifie que l'objet Authentication créé contient bien les autorités (rôles)
+     * et les détails de l'utilisateur.
+     */
     @Test
     @DisplayName("Doit définir les détails d'authentification correctement")
     void shouldSetAuthenticationDetailsCorrectly() throws ServletException, IOException {
@@ -265,6 +304,10 @@ class JwtAuthenticationFilterTest {
         assertNotNull(authentication.getDetails());
     }
 
+    /**
+     * Vérifie le traitement des différentes exceptions pouvant survenir lors du
+     * parsing du token.
+     */
     @Test
     @DisplayName("Doit gérer différents types d'exceptions")
     void shouldHandleDifferentExceptionTypes() throws ServletException, IOException {
@@ -288,6 +331,10 @@ class JwtAuthenticationFilterTest {
         assertTrue(responseBody.contains("Erreur de parsing"));
     }
 
+    /**
+     * Vérifie le comportement lorsque le header Authorization est présent mais
+     * vide.
+     */
     @Test
     @DisplayName("Doit gérer un header Authorization vide")
     void shouldHandleEmptyAuthorizationHeader() throws ServletException, IOException {
@@ -303,6 +350,10 @@ class JwtAuthenticationFilterTest {
         assertNull(SecurityContextHolder.getContext().getAuthentication());
     }
 
+    /**
+     * Vérifie le comportement lorsque le header contient juste "Bearer " sans token
+     * derrière.
+     */
     @Test
     @DisplayName("Doit gérer Bearer sans token")
     void shouldHandleBearerWithoutToken() throws ServletException, IOException {

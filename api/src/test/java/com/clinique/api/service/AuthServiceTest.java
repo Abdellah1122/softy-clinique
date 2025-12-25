@@ -81,6 +81,11 @@ class AuthServiceTest {
         therapistProfile.setSpecialty("Kinésithérapeute");
     }
 
+    /**
+     * Vérifie qu'un nouveau patient peut s'enregistrer avec succès.
+     * Le test s'assure que l'utilisateur et le profil sont créés et qu'un token est
+     * généré.
+     */
     @Test
     @DisplayName("Doit enregistrer un nouveau patient avec succès")
     void shouldRegisterNewPatientSuccessfully() {
@@ -112,6 +117,9 @@ class AuthServiceTest {
         verify(patientProfileRepository).save(any(PatientProfile.class));
     }
 
+    /**
+     * Vérifie qu'un nouveau thérapeute peut s'enregistrer avec succès.
+     */
     @Test
     @DisplayName("Doit enregistrer un nouveau thérapeute avec succès")
     void shouldRegisterNewTherapistSuccessfully() {
@@ -146,6 +154,9 @@ class AuthServiceTest {
         verify(therapistProfileRepository).save(any(TherapistProfile.class));
     }
 
+    /**
+     * Vérifie qu'une exception est lancée si l'email fourni est déjà utilisé.
+     */
     @Test
     @DisplayName("Doit lancer une exception si l'email existe déjà")
     void shouldThrowExceptionWhenEmailAlreadyExists() {
@@ -164,6 +175,10 @@ class AuthServiceTest {
         verify(userRepository, never()).save(any(User.class));
     }
 
+    /**
+     * Vérifie qu'il est impossible de s'enregistrer avec un rôle non autorisé
+     * (comme ADMIN).
+     */
     @Test
     @DisplayName("Doit lancer une exception pour un rôle non valide")
     void shouldThrowExceptionForInvalidRole() {
@@ -183,6 +198,10 @@ class AuthServiceTest {
         });
     }
 
+    /**
+     * Vérifie que l'authentification (login) fonctionne pour un utilisateur
+     * existant.
+     */
     @Test
     @DisplayName("Doit authentifier un utilisateur avec succès")
     void shouldLoginUserSuccessfully() {
@@ -209,6 +228,10 @@ class AuthServiceTest {
         verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
     }
 
+    /**
+     * Vérifie qu'une exception est lancée si l'utilisateur tente de se connecter
+     * avec un email inconnu.
+     */
     @Test
     @DisplayName("Doit lancer une exception si l'utilisateur n'existe pas lors du login")
     void shouldThrowExceptionWhenUserNotFoundDuringLogin() {
@@ -227,6 +250,9 @@ class AuthServiceTest {
         });
     }
 
+    /**
+     * Vérifie que l'ID du profil thérapeute est bien récupéré lors de la connexion.
+     */
     @Test
     @DisplayName("Doit authentifier un thérapeute et récupérer son profileId")
     void shouldLoginTherapistAndGetProfileId() {
@@ -256,6 +282,10 @@ class AuthServiceTest {
         verify(therapistProfileRepository).findByUserId(2L);
     }
 
+    /**
+     * Vérifie qu'un administrateur n'a pas d'ID de profil associé lors de la
+     * connexion.
+     */
     @Test
     @DisplayName("Doit retourner null comme profileId pour un admin")
     void shouldReturnNullProfileIdForAdmin() {
@@ -283,6 +313,9 @@ class AuthServiceTest {
         assertNull(response.getUser().getProfileId());
     }
 
+    /**
+     * Vérifie que le mot de passe est bien encodé avant d'être sauvegardé.
+     */
     @Test
     @DisplayName("Doit encoder le mot de passe lors de l'enregistrement")
     void shouldEncodePasswordDuringRegistration() {
@@ -307,6 +340,10 @@ class AuthServiceTest {
         verify(passwordEncoder).encode("plainPassword");
     }
 
+    /**
+     * Vérifie que le profil patient créé contient les bonnes informations (nom,
+     * prénom).
+     */
     @Test
     @DisplayName("Doit créer un profil patient avec les bonnes informations")
     void shouldCreatePatientProfileWithCorrectInfo() {
@@ -328,13 +365,15 @@ class AuthServiceTest {
         authService.register(request);
 
         // Then
-        verify(patientProfileRepository).save(argThat(profile ->
-                profile.getFirstName().equals("Youssef") &&
-                        profile.getLastName().equals("Idrissi") &&
-                        profile.getUser().equals(testUser)
-        ));
+        verify(patientProfileRepository).save(argThat(profile -> profile.getFirstName().equals("Youssef") &&
+                profile.getLastName().equals("Idrissi") &&
+                profile.getUser().equals(testUser)));
     }
 
+    /**
+     * Vérifie que le profil thérapeute créé contient les informations spécifiques
+     * (spécialité).
+     */
     @Test
     @DisplayName("Doit créer un profil thérapeute avec la spécialité")
     void shouldCreateTherapistProfileWithSpecialty() {
@@ -363,10 +402,8 @@ class AuthServiceTest {
         authService.register(request);
 
         // Then
-        verify(therapistProfileRepository).save(argThat(profile ->
-                profile.getFirstName().equals("Dr. Ali") &&
-                        profile.getLastName().equals("Mansouri") &&
-                        profile.getSpecialty().equals("Psychologue")
-        ));
+        verify(therapistProfileRepository).save(argThat(profile -> profile.getFirstName().equals("Dr. Ali") &&
+                profile.getLastName().equals("Mansouri") &&
+                profile.getSpecialty().equals("Psychologue")));
     }
 }

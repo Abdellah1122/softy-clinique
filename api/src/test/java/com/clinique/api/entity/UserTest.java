@@ -10,11 +10,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests unitaires pour l'entité User.
- * Ces tests vérifient l'implémentation de UserDetails et les comportements de base.
+ * Ces tests vérifient l'implémentation de UserDetails et les comportements de
+ * base.
  */
 @DisplayName("User Entity - Tests de l'entité utilisateur")
 class UserTest {
 
+    /**
+     * Vérifie que le builder crée correctement un utilisateur avec tous les champs.
+     */
     @Test
     @DisplayName("Doit créer un utilisateur avec le builder")
     void shouldCreateUserWithBuilder() {
@@ -34,6 +38,10 @@ class UserTest {
         assertEquals(Role.ROLE_PATIENT, user.getRole());
     }
 
+    /**
+     * Vérifie que la méthode getUsername() retourne bien l'email de l'utilisateur.
+     * Dans cette implémentation, l'email sert d'identifiant unique.
+     */
     @Test
     @DisplayName("Doit retourner l'email comme username")
     void shouldReturnEmailAsUsername() {
@@ -51,6 +59,9 @@ class UserTest {
         assertEquals("patient@clinique.com", username);
     }
 
+    /**
+     * Vérifie que les autorités retournées pour un patient incluent "ROLE_PATIENT".
+     */
     @Test
     @DisplayName("Doit retourner les authorities avec le rôle PATIENT")
     void shouldReturnAuthoritiesWithPatientRole() {
@@ -71,6 +82,10 @@ class UserTest {
                 .anyMatch(a -> a.getAuthority().equals("ROLE_PATIENT")));
     }
 
+    /**
+     * Vérifie que les autorités retournées pour un thérapeute incluent
+     * "ROLE_THERAPIST".
+     */
     @Test
     @DisplayName("Doit retourner les authorities avec le rôle THERAPIST")
     void shouldReturnAuthoritiesWithTherapistRole() {
@@ -90,6 +105,10 @@ class UserTest {
                 .anyMatch(a -> a.getAuthority().equals("ROLE_THERAPIST")));
     }
 
+    /**
+     * Vérifie que les autorités retournées pour un administrateur incluent
+     * "ROLE_ADMIN".
+     */
     @Test
     @DisplayName("Doit retourner les authorities avec le rôle ADMIN")
     void shouldReturnAuthoritiesWithAdminRole() {
@@ -109,6 +128,10 @@ class UserTest {
                 .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN")));
     }
 
+    /**
+     * Vérifie que le compte n'est pas expiré par défaut (toujours true dans
+     * l'implémentation actuelle).
+     */
     @Test
     @DisplayName("Le compte ne doit pas être expiré par défaut")
     void accountShouldNotBeExpiredByDefault() {
@@ -123,6 +146,10 @@ class UserTest {
         assertTrue(user.isAccountNonExpired());
     }
 
+    /**
+     * Vérifie que le compte n'est pas verrouillé par défaut (toujours true dans
+     * l'implémentation actuelle).
+     */
     @Test
     @DisplayName("Le compte ne doit pas être verrouillé par défaut")
     void accountShouldNotBeLockedByDefault() {
@@ -137,6 +164,10 @@ class UserTest {
         assertTrue(user.isAccountNonLocked());
     }
 
+    /**
+     * Vérifie que les identifiants ne sont pas expirés par défaut (toujours true
+     * dans l'implémentation actuelle).
+     */
     @Test
     @DisplayName("Les credentials ne doivent pas être expirées par défaut")
     void credentialsShouldNotBeExpiredByDefault() {
@@ -151,6 +182,10 @@ class UserTest {
         assertTrue(user.isCredentialsNonExpired());
     }
 
+    /**
+     * Vérifie que le compte est activé par défaut (toujours true dans
+     * l'implémentation actuelle).
+     */
     @Test
     @DisplayName("Le compte doit être activé par défaut")
     void accountShouldBeEnabledByDefault() {
@@ -165,6 +200,10 @@ class UserTest {
         assertTrue(user.isEnabled());
     }
 
+    /**
+     * Vérifie que le constructeur sans arguments crée une instance vide mais non
+     * nulle.
+     */
     @Test
     @DisplayName("Doit créer un utilisateur avec constructeur vide")
     void shouldCreateUserWithNoArgsConstructor() {
@@ -179,6 +218,10 @@ class UserTest {
         assertNull(user.getRole());
     }
 
+    /**
+     * Vérifie que le constructeur avec tous les arguments initialise correctement
+     * tous les champs.
+     */
     @Test
     @DisplayName("Doit créer un utilisateur avec constructeur complet")
     void shouldCreateUserWithAllArgsConstructor() {
@@ -192,6 +235,9 @@ class UserTest {
         assertEquals(Role.ROLE_PATIENT, user.getRole());
     }
 
+    /**
+     * Teste les méthodes getter et setter pour l'ID.
+     */
     @Test
     @DisplayName("Doit définir et récupérer l'ID")
     void shouldSetAndGetId() {
@@ -205,6 +251,9 @@ class UserTest {
         assertEquals(10L, user.getId());
     }
 
+    /**
+     * Teste les méthodes getter et setter pour l'email.
+     */
     @Test
     @DisplayName("Doit définir et récupérer l'email")
     void shouldSetAndGetEmail() {
@@ -218,6 +267,9 @@ class UserTest {
         assertEquals("nouveau@clinique.com", user.getEmail());
     }
 
+    /**
+     * Teste les méthodes getter et setter pour le mot de passe.
+     */
     @Test
     @DisplayName("Doit définir et récupérer le mot de passe")
     void shouldSetAndGetPassword() {
@@ -231,6 +283,9 @@ class UserTest {
         assertEquals("newHashedPassword", user.getPassword());
     }
 
+    /**
+     * Teste les méthodes getter et setter pour le rôle.
+     */
     @Test
     @DisplayName("Doit définir et récupérer le rôle")
     void shouldSetAndGetRole() {
@@ -244,6 +299,10 @@ class UserTest {
         assertEquals(Role.ROLE_THERAPIST, user.getRole());
     }
 
+    /**
+     * Vérifie l'implémentation de la méthode equals() : deux objets avec les mêmes
+     * données doivent être égaux.
+     */
     @Test
     @DisplayName("Deux utilisateurs identiques doivent être égaux")
     void twoIdenticalUsersShouldBeEqual() {
@@ -267,6 +326,10 @@ class UserTest {
         assertEquals(user1.hashCode(), user2.hashCode());
     }
 
+    /**
+     * Vérifie l'implémentation de la méthode equals() : deux objets avec des
+     * données différentes ne doivent pas être égaux.
+     */
     @Test
     @DisplayName("Deux utilisateurs différents ne doivent pas être égaux")
     void twoDifferentUsersShouldNotBeEqual() {
@@ -289,6 +352,10 @@ class UserTest {
         assertNotEquals(user1, user2);
     }
 
+    /**
+     * Vérifie que la méthode toString() génère une chaîne contenant les
+     * informations essentielles de l'utilisateur.
+     */
     @Test
     @DisplayName("toString doit contenir les informations de l'utilisateur")
     void toStringShouldContainUserInfo() {
@@ -308,6 +375,10 @@ class UserTest {
         assertTrue(userString.contains("ROLE_PATIENT"));
     }
 
+    /**
+     * Vérifie que l'entité gère correctement les emails contenant des caractères
+     * spéciaux autorisés (comme '+').
+     */
     @Test
     @DisplayName("Doit gérer les emails avec caractères spéciaux")
     void shouldHandleEmailsWithSpecialCharacters() {
@@ -322,6 +393,10 @@ class UserTest {
         assertEquals("test.user+tag@clinique-test.com", user.getUsername());
     }
 
+    /**
+     * Vérifie que l'entité peut être configurée avec n'importe laquelle des valeurs
+     * de l'énumération Role.
+     */
     @Test
     @DisplayName("Doit créer des utilisateurs pour tous les rôles")
     void shouldCreateUsersForAllRoles() {

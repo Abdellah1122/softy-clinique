@@ -84,6 +84,10 @@ class PatientServiceTest {
         patient2.setLastName("Zahra");
     }
 
+    /**
+     * Vérifie qu'un thérapeute peut récupérer la liste de tous ses patients
+     * distincts.
+     */
     @Test
     @DisplayName("Doit récupérer tous les patients d'un thérapeute")
     void shouldGetAllPatientsForTherapist() {
@@ -106,6 +110,9 @@ class PatientServiceTest {
         verify(patientProfileRepository).findDistinctPatientsByTherapistId(1L);
     }
 
+    /**
+     * Vérifie que la liste est vide si le thérapeute n'a aucun patient assigné.
+     */
     @Test
     @DisplayName("Doit retourner une liste vide si le thérapeute n'a pas de patients")
     void shouldReturnEmptyListWhenTherapistHasNoPatients() {
@@ -122,6 +129,10 @@ class PatientServiceTest {
         verify(patientProfileRepository).findDistinctPatientsByTherapistId(1L);
     }
 
+    /**
+     * Vérifie qu'une exception est lancée si le profil du thérapeute n'est pas
+     * trouvé.
+     */
     @Test
     @DisplayName("Doit lancer une exception si le profil thérapeute n'existe pas")
     void shouldThrowExceptionWhenTherapistProfileNotFound() {
@@ -135,6 +146,10 @@ class PatientServiceTest {
         verify(patientProfileRepository, never()).findDistinctPatientsByTherapistId(anyLong());
     }
 
+    /**
+     * Vérifie que les données des patients sont correctement mappées dans le DTO de
+     * retour.
+     */
     @Test
     @DisplayName("Doit mapper correctement les informations du patient")
     void shouldMapPatientInfoCorrectly() {
@@ -155,6 +170,9 @@ class PatientServiceTest {
         assertEquals("Bennani", dto.getLastName());
     }
 
+    /**
+     * Vérifie que le service gère correctement une liste de plusieurs patients.
+     */
     @Test
     @DisplayName("Doit gérer plusieurs patients avec des noms différents")
     void shouldHandleMultiplePatientsWithDifferentNames() {

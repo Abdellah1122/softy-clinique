@@ -15,6 +15,10 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("PatientProfile Entity - Tests du profil patient")
 class PatientProfileTest {
 
+    /**
+     * Vérifie que le constructeur par défaut crée un profil vide avec toutes les
+     * propriétés à null.
+     */
     @Test
     @DisplayName("Doit créer un profil patient vide")
     void shouldCreateEmptyPatientProfile() {
@@ -31,6 +35,9 @@ class PatientProfileTest {
         assertNull(profile.getPhoneNumber());
     }
 
+    /**
+     * Teste les méthodes getter et setter pour l'ID du profil.
+     */
     @Test
     @DisplayName("Doit définir et récupérer l'ID")
     void shouldSetAndGetId() {
@@ -44,6 +51,9 @@ class PatientProfileTest {
         assertEquals(1L, profile.getId());
     }
 
+    /**
+     * Teste les méthodes getter et setter pour le prénom du patient.
+     */
     @Test
     @DisplayName("Doit définir et récupérer le prénom")
     void shouldSetAndGetFirstName() {
@@ -57,6 +67,9 @@ class PatientProfileTest {
         assertEquals("Mohammed", profile.getFirstName());
     }
 
+    /**
+     * Teste les méthodes getter et setter pour le nom de famille du patient.
+     */
     @Test
     @DisplayName("Doit définir et récupérer le nom de famille")
     void shouldSetAndGetLastName() {
@@ -70,6 +83,9 @@ class PatientProfileTest {
         assertEquals("Alami", profile.getLastName());
     }
 
+    /**
+     * Teste les méthodes getter et setter pour la date de naissance.
+     */
     @Test
     @DisplayName("Doit définir et récupérer la date de naissance")
     void shouldSetAndGetDateOfBirth() {
@@ -84,6 +100,9 @@ class PatientProfileTest {
         assertEquals(birthDate, profile.getDateOfBirth());
     }
 
+    /**
+     * Teste les méthodes getter et setter pour le numéro de téléphone.
+     */
     @Test
     @DisplayName("Doit définir et récupérer le numéro de téléphone")
     void shouldSetAndGetPhoneNumber() {
@@ -97,6 +116,9 @@ class PatientProfileTest {
         assertEquals("+212612345678", profile.getPhoneNumber());
     }
 
+    /**
+     * Vérifie l'association entre le profil patient et l'entité User.
+     */
     @Test
     @DisplayName("Doit lier un utilisateur au profil")
     void shouldLinkUserToProfile() {
@@ -118,6 +140,9 @@ class PatientProfileTest {
         assertEquals("patient@clinique.com", profile.getUser().getEmail());
     }
 
+    /**
+     * Vérifie que le profil peut gérer une liste de rendez-vous.
+     */
     @Test
     @DisplayName("Doit gérer une liste de rendez-vous")
     void shouldHandleAppointmentsList() {
@@ -133,6 +158,10 @@ class PatientProfileTest {
         assertTrue(profile.getAppointments().isEmpty());
     }
 
+    /**
+     * Vérifie la création d'un profil complet avec toutes les informations
+     * renseignées.
+     */
     @Test
     @DisplayName("Doit créer un profil patient complet")
     void shouldCreateCompletePatientProfile() {
@@ -161,6 +190,10 @@ class PatientProfileTest {
         assertEquals(user, profile.getUser());
     }
 
+    /**
+     * Vérifie que l'entité accepte les noms contenant des caractères spéciaux
+     * (tirets, apostrophes).
+     */
     @Test
     @DisplayName("Doit gérer les noms avec des caractères spéciaux")
     void shouldHandleNamesWithSpecialCharacters() {
@@ -176,6 +209,9 @@ class PatientProfileTest {
         assertEquals("O'Brien", profile.getLastName());
     }
 
+    /**
+     * Vérifie que l'entité accepte les dates de naissance passées.
+     */
     @Test
     @DisplayName("Doit accepter une date de naissance dans le passé")
     void shouldAcceptPastDateOfBirth() {
@@ -191,6 +227,9 @@ class PatientProfileTest {
         assertTrue(profile.getDateOfBirth().isBefore(LocalDate.now()));
     }
 
+    /**
+     * Vérifie que l'entité peut stocker différents formats de numéros de téléphone.
+     */
     @Test
     @DisplayName("Doit gérer différents formats de numéros de téléphone")
     void shouldHandleDifferentPhoneNumberFormats() {
@@ -210,6 +249,9 @@ class PatientProfileTest {
         assertEquals("+33612345678", profile3.getPhoneNumber());
     }
 
+    /**
+     * Vérifie que le numéro de téléphone est optionnel (peut être null).
+     */
     @Test
     @DisplayName("Doit permettre un numéro de téléphone null")
     void shouldAllowNullPhoneNumber() {
@@ -223,6 +265,9 @@ class PatientProfileTest {
         assertNull(profile.getPhoneNumber());
     }
 
+    /**
+     * Vérifie que la date de naissance est optionnelle (peut être null).
+     */
     @Test
     @DisplayName("Doit permettre une date de naissance null")
     void shouldAllowNullDateOfBirth() {
@@ -236,6 +281,10 @@ class PatientProfileTest {
         assertNull(profile.getDateOfBirth());
     }
 
+    /**
+     * Vérifie l'égalité entre deux profils ayant les mêmes données (basé sur
+     * Lombok @Data).
+     */
     @Test
     @DisplayName("Deux profils avec le même ID doivent être égaux")
     void twoProfilesWithSameDataShouldBeEqual() {
@@ -263,6 +312,10 @@ class PatientProfileTest {
         assertEquals(profile1, profile2);
     }
 
+    /**
+     * Vérifie que la méthode toString() contient les informations lisibles du
+     * profil.
+     */
     @Test
     @DisplayName("toString doit contenir les informations du profil")
     void toStringShouldContainProfileInfo() {
@@ -278,5 +331,6 @@ class PatientProfileTest {
         // Then
         assertTrue(profileString.contains("Youssef"));
         assertTrue(profileString.contains("Idrissi"));
+
     }
 }

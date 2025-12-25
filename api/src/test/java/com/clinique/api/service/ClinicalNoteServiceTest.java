@@ -35,6 +35,9 @@ class ClinicalNoteServiceTest {
     @Mock
     private ClinicalNoteRepository clinicalNoteRepository;
 
+    @Mock
+    private MlService mlService;
+
     @InjectMocks
     private ClinicalNoteService clinicalNoteService;
 
@@ -94,6 +97,10 @@ class ClinicalNoteServiceTest {
         clinicalNote.setPatientProgressScore(8);
     }
 
+    /**
+     * Vérifie qu'une nouvelle note clinique est ajoutée correctement au
+     * rendez-vous.
+     */
     @Test
     @DisplayName("Doit ajouter une nouvelle note clinique")
     void shouldAddNewClinicalNote() {
@@ -112,13 +119,14 @@ class ClinicalNoteServiceTest {
 
         // Then
         assertNotNull(result);
-        verify(clinicalNoteRepository).save(argThat(note ->
-                note.getSummary().equals("Le patient progresse bien") &&
-                        note.getPrivateNotes().equals("Notes privées du thérapeute") &&
-                        note.getPatientProgressScore() == 7
-        ));
+        verify(clinicalNoteRepository).save(argThat(note -> note.getSummary().equals("Le patient progresse bien") &&
+                note.getPrivateNotes().equals("Notes privées du thérapeute") &&
+                note.getPatientProgressScore() == 7));
     }
 
+    /**
+     * Vérifie qu'une note clinique existante est mise à jour correctement.
+     */
     @Test
     @DisplayName("Doit mettre à jour une note clinique existante")
     void shouldUpdateExistingClinicalNote() {
@@ -137,13 +145,15 @@ class ClinicalNoteServiceTest {
 
         // Then
         assertNotNull(result);
-        verify(clinicalNoteRepository).save(argThat(note ->
-                note.getSummary().equals("Mise à jour de la note") &&
-                        note.getPrivateNotes().equals("Nouvelles notes privées") &&
-                        note.getPatientProgressScore() == 9
-        ));
+        verify(clinicalNoteRepository).save(argThat(note -> note.getSummary().equals("Mise à jour de la note") &&
+                note.getPrivateNotes().equals("Nouvelles notes privées") &&
+                note.getPatientProgressScore() == 9));
     }
 
+    /**
+     * Vérifie qu'une exception est lancée si l'on tente d'ajouter une note à un
+     * rendez-vous inexistant.
+     */
     @Test
     @DisplayName("Doit lancer une exception si le rendez-vous n'existe pas")
     void shouldThrowExceptionWhenAppointmentNotFound() {
@@ -159,6 +169,10 @@ class ClinicalNoteServiceTest {
         });
     }
 
+    /**
+     * Vérifie qu'un thérapeute ne peut pas modifier la note d'un rendez-vous qui ne
+     * lui est pas assigné.
+     */
     @Test
     @DisplayName("Doit refuser l'accès à un thérapeute non autorisé")
     void shouldDenyAccessToUnauthorizedTherapist() {
@@ -174,6 +188,10 @@ class ClinicalNoteServiceTest {
         });
     }
 
+    /**
+     * Vérifie qu'il est possible de créer une note sans attribuer de score de
+     * progrès.
+     */
     @Test
     @DisplayName("Doit créer une note avec un score de progrès null")
     void shouldCreateNoteWithNullProgressScore() {
@@ -192,11 +210,13 @@ class ClinicalNoteServiceTest {
 
         // Then
         assertNotNull(result);
-        verify(clinicalNoteRepository).save(argThat(note ->
-                note.getPatientProgressScore() == null
-        ));
+        verify(clinicalNoteRepository).save(argThat(note -> note.getPatientProgressScore() == null));
     }
 
+    /**
+     * Vérifie que la relation entre la note clinique et le rendez-vous est bien
+     * établie.
+     */
     @Test
     @DisplayName("Doit lier la note au rendez-vous")
     void shouldLinkNoteToAppointment() {
@@ -213,11 +233,13 @@ class ClinicalNoteServiceTest {
         clinicalNoteService.addOrUpdateNote(1L, request, therapistUser);
 
         // Then
-        verify(clinicalNoteRepository).save(argThat(note ->
-                note.getAppointment().equals(appointment)
-        ));
+        verify(clinicalNoteRepository).save(argThat(note -> note.getAppointment().equals(appointment)));
     }
 
+    /**
+     * Vérifie que le DTO retourné contient bien les informations de la note
+     * nouvellement créée/mise à jour.
+     */
     @Test
     @DisplayName("Doit retourner un AppointmentDTO avec la note")
     void shouldReturnAppointmentDTOWithNote() {
@@ -241,6 +263,9 @@ class ClinicalNoteServiceTest {
         assertEquals(1L, result.getNote().getId());
     }
 
+    /**
+     * Vérifie qu'il est possible d'attribuer le score de progrès maximum (10).
+     */
     @Test
     @DisplayName("Doit créer une note avec un score de progrès de 10")
     void shouldCreateNoteWithMaxProgressScore() {
@@ -258,8 +283,6 @@ class ClinicalNoteServiceTest {
 
         // Then
         assertNotNull(result);
-        verify(clinicalNoteRepository).save(argThat(note ->
-                note.getPatientProgressScore() == 10
-        ));
+        verify(clinicalNoteRepository).save(argThat(note -> note.getPatientProgressScore() == 10));
     }
 }

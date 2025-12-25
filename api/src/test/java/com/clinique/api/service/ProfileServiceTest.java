@@ -73,6 +73,9 @@ class ProfileServiceTest {
         therapistProfile.setCredentials("Diplôme d'État");
     }
 
+    /**
+     * Vérifie qu'un patient peut récupérer son propre profil.
+     */
     @Test
     @DisplayName("Doit récupérer le profil d'un patient")
     void shouldGetPatientProfile() {
@@ -94,6 +97,9 @@ class ProfileServiceTest {
         verify(patientProfileRepository).findByUserId(1L);
     }
 
+    /**
+     * Vérifie qu'un thérapeute peut récupérer son propre profil.
+     */
     @Test
     @DisplayName("Doit récupérer le profil d'un thérapeute")
     void shouldGetTherapistProfile() {
@@ -115,6 +121,9 @@ class ProfileServiceTest {
         verify(therapistProfileRepository).findByUserId(2L);
     }
 
+    /**
+     * Vérifie qu'une exception est lancée si le profil du patient est introuvable.
+     */
     @Test
     @DisplayName("Doit lancer une exception si le profil patient n'existe pas")
     void shouldThrowExceptionWhenPatientProfileNotFound() {
@@ -127,6 +136,10 @@ class ProfileServiceTest {
         });
     }
 
+    /**
+     * Vérifie qu'une exception est lancée si le profil du thérapeute est
+     * introuvable.
+     */
     @Test
     @DisplayName("Doit lancer une exception si le profil thérapeute n'existe pas")
     void shouldThrowExceptionWhenTherapistProfileNotFound() {
@@ -139,6 +152,9 @@ class ProfileServiceTest {
         });
     }
 
+    /**
+     * Vérifie qu'un patient peut mettre à jour ses informations personnelles.
+     */
     @Test
     @DisplayName("Doit mettre à jour le profil d'un patient")
     void shouldUpdatePatientProfile() {
@@ -157,14 +173,16 @@ class ProfileServiceTest {
 
         // Then
         assertNotNull(result);
-        verify(patientProfileRepository).save(argThat(profile ->
-                profile.getFirstName().equals("Mohammed") &&
-                        profile.getLastName().equals("Alami") &&
-                        profile.getDateOfBirth().equals(LocalDate.of(1992, 3, 20)) &&
-                        profile.getPhoneNumber().equals("+212698765432")
-        ));
+        verify(patientProfileRepository).save(argThat(profile -> profile.getFirstName().equals("Mohammed") &&
+                profile.getLastName().equals("Alami") &&
+                profile.getDateOfBirth().equals(LocalDate.of(1992, 3, 20)) &&
+                profile.getPhoneNumber().equals("+212698765432")));
     }
 
+    /**
+     * Vérifie qu'un thérapeute peut mettre à jour ses informations
+     * professionnelles.
+     */
     @Test
     @DisplayName("Doit mettre à jour le profil d'un thérapeute")
     void shouldUpdateTherapistProfile() {
@@ -183,14 +201,16 @@ class ProfileServiceTest {
 
         // Then
         assertNotNull(result);
-        verify(therapistProfileRepository).save(argThat(profile ->
-                profile.getFirstName().equals("Dr. Youssef") &&
-                        profile.getLastName().equals("Idrissi") &&
-                        profile.getSpecialty().equals("Psychologue") &&
-                        profile.getCredentials().equals("Master en Psychologie")
-        ));
+        verify(therapistProfileRepository).save(argThat(profile -> profile.getFirstName().equals("Dr. Youssef") &&
+                profile.getLastName().equals("Idrissi") &&
+                profile.getSpecialty().equals("Psychologue") &&
+                profile.getCredentials().equals("Master en Psychologie")));
     }
 
+    /**
+     * Vérifie qu'une exception est lancée lors de la tentative de mise à jour d'un
+     * profil patient inexistant.
+     */
     @Test
     @DisplayName("Doit lancer une exception lors de la mise à jour si le profil patient n'existe pas")
     void shouldThrowExceptionWhenUpdatingNonExistentPatientProfile() {
@@ -207,6 +227,10 @@ class ProfileServiceTest {
         });
     }
 
+    /**
+     * Vérifie qu'une exception est lancée lors de la tentative de mise à jour d'un
+     * profil thérapeute inexistant.
+     */
     @Test
     @DisplayName("Doit lancer une exception lors de la mise à jour si le profil thérapeute n'existe pas")
     void shouldThrowExceptionWhenUpdatingNonExistentTherapistProfile() {
@@ -223,6 +247,10 @@ class ProfileServiceTest {
         });
     }
 
+    /**
+     * Vérifie qu'une exception est lancée si un utilisateur avec un rôle non
+     * supporté tente d'accéder à son profil.
+     */
     @Test
     @DisplayName("Doit lancer une exception pour un rôle non supporté")
     void shouldThrowExceptionForUnsupportedRole() {
@@ -239,6 +267,10 @@ class ProfileServiceTest {
         });
     }
 
+    /**
+     * Vérifie qu'une exception est lancée si un utilisateur avec un rôle non
+     * supporté tente de mettre à jour son profil.
+     */
     @Test
     @DisplayName("Doit lancer une exception lors de la mise à jour pour un rôle non supporté")
     void shouldThrowExceptionWhenUpdatingUnsupportedRole() {

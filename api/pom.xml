@@ -42,6 +42,11 @@
         <!-- JaCoCo properties for code coverage -->
         <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
         <jacoco.version>0.8.11</jacoco.version>
+
+        <!-- JMeter Default Properties -->
+        <jmeter.users>1</jmeter.users>
+        <jmeter.rampup>1</jmeter.rampup>
+        <jmeter.loop>1</jmeter.loop>
     </properties>
 
     <dependencies>
@@ -130,6 +135,20 @@
                         </exclude>
                     </excludes>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>pre-integration-test</id>
+                        <goals>
+                            <goal>start</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>post-integration-test</id>
+                        <goals>
+                            <goal>stop</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
 
             <!-- JaCoCo Plugin for Code Coverage -->
@@ -161,6 +180,48 @@
                 <groupId>org.sonarsource.scanner.maven</groupId>
                 <artifactId>sonar-maven-plugin</artifactId>
                 <version>3.11.0.3922</version>
+            </plugin>
+
+            <!-- JMeter Maven Plugin -->
+            <plugin>
+                <groupId>com.lazerycode.jmeter</groupId>
+                <artifactId>jmeter-maven-plugin</artifactId>
+                <version>3.8.0</version>
+                <executions>
+                    <!-- Generate JMeter configuration -->
+                    <execution>
+                        <id>configuration</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>configure</goal>
+                        </goals>
+                    </execution>
+                    <!-- Run JMeter tests -->
+                    <execution>
+                        <id>jmeter-tests</id>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>jmeter</goal>
+                        </goals>
+                    </execution>
+                    <!-- Check results -->
+                    <execution>
+                        <id>check-results</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>results</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <testFilesDirectory>${project.basedir}/src/test/jmeter</testFilesDirectory>
+                    <generateReports>true</generateReports>
+                    <propertiesUser>
+                        <jmeter.users>${jmeter.users}</jmeter.users>
+                        <jmeter.rampup>${jmeter.rampup}</jmeter.rampup>
+                        <jmeter.loop>${jmeter.loop}</jmeter.loop>
+                    </propertiesUser>
+                </configuration>
             </plugin>
         </plugins>
     </build>
